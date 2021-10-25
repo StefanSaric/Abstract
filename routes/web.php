@@ -39,4 +39,4 @@ Route::post('/admin/files/update',  [App\Http\Controllers\Admin\FilesController:
 Route::get('/admin/files/{id}/delete',  [App\Http\Controllers\Admin\FilesController::class, 'delete']);
 Route::get('/admin/files/show/{id}',  [App\Http\Controllers\Admin\FilesController::class, 'show']);
 
-
+//
