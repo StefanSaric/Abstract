@@ -75,6 +75,8 @@
                                                             <td>{{ $file->name }}</td>
                                                             <td>{{ $file->url }}</td>
                                                             <td>
+                                                                <a href="{{url('/admin/files/show/'.$file->id)}}" class="btn-floating btn-small tooltipped waves-effect waves-light gradient-45deg-light-blue-cyan" data-position="top" data-tooltip="{{__('Pogledaj fajl')}}" target="_blank">
+                                                                    <i class="material-icons">search</i></a>
                                                                 <a href="{{url('/admin/files/'.$file->id.'/edit')}}" class="btn tooltipped mb-6 waves-effect waves-light gradient-45deg-green-teal" data-position="top" data-tooltip="{{__('Izmeni Fajl')}}">
                                                                     <i class="material-icons">create</i></a>
                                                                 <a href="{{url('/admin/files/'.$file->id.'/delete')}}" class="btn-small tooltipped mb-6 waves-effect waves-light gradient-45deg-red-pink" data-position="top" data-tooltip="{{__('Obriši fajl')}}">

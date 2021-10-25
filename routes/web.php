@@ -37,4 +37,6 @@ Route::post('/admin/files/store',  [App\Http\Controllers\Admin\FilesController::
 Route::get('/admin/files/{id}/edit',  [App\Http\Controllers\Admin\FilesController::class, 'edit']);
 Route::post('/admin/files/update',  [App\Http\Controllers\Admin\FilesController::class, 'update']);
 Route::get('/admin/files/{id}/delete',  [App\Http\Controllers\Admin\FilesController::class, 'delete']);
+Route::get('/admin/files/show/{id}',  [App\Http\Controllers\Admin\FilesController::class, 'show']);
+
 

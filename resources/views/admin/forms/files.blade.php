@@ -6,7 +6,7 @@
     <div class="input-field col s12">
         <i class='material-icons prefix'>account_circle</i>
         <input type="text" name="name" id="name" class="validate @error('name') invalid @enderror"
-               value="@if(isset($file)){{ $file->name }}@else{{ old('name') }}@endif" @if(isset($file) || old('name') != null) placeholder="" @endif required></input>
+               value="@if(isset($file)){{ $file->name }}@else{{ old('name') }}@endif" @if(isset($file) || old('name') != null) placeholder="" @endif></input>
         <label for="name" class="">{{__('Naziv')}}</label>
     </div>
 </div>
@@ -14,7 +14,7 @@
     <div class="file-field input-field col l6 m6 s12">
         <div class="btn-small cyan float-right">
             <span>{{__('Izaberi')}}</span>
-            <input type="file" id="documents" name="documents[]" multiple>
+            <input type="file" id="file" name="file" multiple>
         </div>
         <div class="file-path-wrapper" style="padding-left: 0">
             <i class='material-icons prefix'>attach_file</i>
