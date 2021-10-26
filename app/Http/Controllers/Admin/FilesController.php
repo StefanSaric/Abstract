@@ -46,9 +46,9 @@ class FilesController extends Controller
             $name = $file->getClientOriginalName();
 
         // store raw file
-        $file_path = public_path($path) . $file->getClientOriginalName();
+        $file_path = public_path($path) . $name;
         move_uploaded_file($file, $file_path);
-        $url = $path. $file->getClientOriginalName();
+        $url = $path. $name;
 
         $one_file = Files::create(['user_id' => Auth::user()->id, 'name' => $name ,'url' => $url, 'zip' => 1]);
 
