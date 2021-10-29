@@ -65,6 +65,7 @@
                                                         <th>&nbsp;&nbsp;&nbsp;#</th>
                                                         <th>{{__('Ime')}}</th>
                                                         <th>{{__('Putanja do fajla')}}</th>
+                                                        <th>{{__('Putanja do zip fajla')}}</th>
                                                         <th style="min-width: 85px">{{__('Akcije')}}</th>
                                                     </tr>
                                                     </thead>
@@ -74,6 +75,7 @@
                                                             <td data-order="{{ $num + 1 }}">&nbsp;&nbsp;&nbsp;{{ $num + 1 }}</td>
                                                             <td>{{ $file->name }}</td>
                                                             <td>{{ $file->url }}</td>
+                                                            <td>{{ $file->zip }}</td>
                                                             <td>
                                                                 <a href="{{url('/admin/files/show/'.$file->id)}}" class="btn tooltipped mb-6 waves-effect waves-light gradient-45deg-light-blue-cyan" data-position="top" data-tooltip="{{__('Pogledaj fajl')}}" target="_blank">
                                                                     <i class="material-icons">search</i></a>

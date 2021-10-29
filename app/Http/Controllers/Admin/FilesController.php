@@ -8,7 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-
+use Monolog\Handler\SlackWebhookHandler;
+use ZipArchive;
+use Illuminate\Support\Facades\File;
 
 class FilesController extends Controller
 {
@@ -26,8 +28,7 @@ class FilesController extends Controller
 
     public function store (Request $request)
     {
-        //dd($request->all());
-
+        // validation for files
         $validator = Validator::make($request->all(),[
             'file' => 'required',
         ]);
@@ -37,22 +38,35 @@ class FilesController extends Controller
                 ->withInput($request->input());
         }
 
-        $path = 'files/';
+
         $file = $request->file('file');
+
 
         if( $request->name != null)
             $name = $request->name;
         else
             $name = $file->getClientOriginalName();
 
+
         // store raw file
-        $file_path = public_path($path) . $name;
+        $file_path = public_path('files/') . $name;
         move_uploaded_file($file, $file_path);
-        $url = $path. $name;
-
-        $one_file = Files::create(['user_id' => Auth::user()->id, 'name' => $name ,'url' => $url, 'zip' => 1]);
 
 
+        //create zip file
+        $zip_name = basename($file->getClientOriginalName(), '.'.$file->getClientOriginalExtension()).'.zip';
+        $zip_path = public_path('zip/').$zip_name;
+
+        $zip = new ZipArchive;
+
+        $zip->open($zip_path,ZipArchive::CREATE);
+
+        $zip->addFile($file_path, $name);
+        $zip->close();
+
+
+
+        $one_file = Files::create(['user_id' => Auth::user()->id, 'name' => $name ,'url' => $file_path, 'zip' => $zip_path]);
 
         Session::flash('message', 'success_'.__('Fajl je uspešno dodat!'));
 
