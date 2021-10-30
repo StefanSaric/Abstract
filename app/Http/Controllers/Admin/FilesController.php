@@ -60,8 +60,10 @@ class FilesController extends Controller
         //path to zip file
         $zip_path = public_path('zip/').$zip_name;
 
+        //call Laravel queue job to create zip file
         dispatch(new CreateZipFile($name,$file_path,$zip_path));
 
+        //store data to database
         $one_file = Files::create(['user_id' => Auth::user()->id, 'name' => $name ,'url' => $file_path, 'zip' => $zip_path]);
 
         Session::flash('message', 'success_'.__('Fajl je uspešno dodat!'));
@@ -71,17 +73,17 @@ class FilesController extends Controller
 
     public function delete ($id) {
 
-        $document = Files::find($id);
-        $document->show = 0;
-        
-        $document->save();
+        $file = Files::find($id);
+        $file->show = 0;
+
+        $file->save();
 
         return redirect ('admin/files');
     }
 
     public function show($id)
     {
-        $file = Files::where('id', '=', $id)->first();
+        $file = Files::find($id);
         //dd($file->url);
 
         return response()->file($file->url);
