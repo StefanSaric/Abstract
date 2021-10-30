@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\CreateZipFile;
 use App\Models\Files;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Validator;
 use Monolog\Handler\SlackWebhookHandler;
 use ZipArchive;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Artisan;
 
 class FilesController extends Controller
 {
@@ -42,29 +44,23 @@ class FilesController extends Controller
         $file = $request->file('file');
 
 
-        if( $request->name != null)
-            $name = $request->name;
-        else
+        if( $request->name != null) {
+            $name = $request->name . '.' . $file->getClientOriginalExtension();
+            $zip_name = $request->name . '.zip';
+        }
+        else {
             $name = $file->getClientOriginalName();
-
+            $zip_name = basename($file->getClientOriginalName(), '.' . $file->getClientOriginalExtension()) . '.zip';
+        }
 
         // store raw file
         $file_path = public_path('files/') . $name;
         move_uploaded_file($file, $file_path);
 
-
-        //create zip file
-        $zip_name = basename($file->getClientOriginalName(), '.'.$file->getClientOriginalExtension()).'.zip';
+        //path to zip file
         $zip_path = public_path('zip/').$zip_name;
 
-        $zip = new ZipArchive;
-
-        $zip->open($zip_path,ZipArchive::CREATE);
-
-        $zip->addFile($file_path, $name);
-        $zip->close();
-
-
+        dispatch(new CreateZipFile($name,$file_path,$zip_path));
 
         $one_file = Files::create(['user_id' => Auth::user()->id, 'name' => $name ,'url' => $file_path, 'zip' => $zip_path]);
 

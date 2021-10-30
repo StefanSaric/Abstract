@@ -34,9 +34,12 @@ Route::get('/admin/users/{id}/delete',  [App\Http\Controllers\Admin\UserControll
 Route::get('/admin/files', [App\Http\Controllers\Admin\FilesController::class, 'index']);
 Route::get('/admin/files/create',  [App\Http\Controllers\Admin\FilesController::class, 'create']);
 Route::post('/admin/files/store',  [App\Http\Controllers\Admin\FilesController::class, 'store']);
-Route::get('/admin/files/{id}/edit',  [App\Http\Controllers\Admin\FilesController::class, 'edit']);
 Route::post('/admin/files/update',  [App\Http\Controllers\Admin\FilesController::class, 'update']);
 Route::get('/admin/files/{id}/delete',  [App\Http\Controllers\Admin\FilesController::class, 'delete']);
 Route::get('/admin/files/show/{id}',  [App\Http\Controllers\Admin\FilesController::class, 'show']);
 
 //
+Route::get('/admin/files/{id}/createpassword',  [App\Http\Controllers\Admin\ZipController::class, 'setPassword']);
+Route::post('/admin/files/storepassword',  [App\Http\Controllers\Admin\ZipController::class, 'protectZipFile']);
+
+
