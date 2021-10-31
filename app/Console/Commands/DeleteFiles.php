@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Files;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class DeleteFiles extends Command
 {
@@ -38,8 +40,13 @@ class DeleteFiles extends Command
      */
     public function handle()
     {
-        DB::table('files')->where('show', '=', '0')->delete();
-
+        //DB::table('files')->where('show', '=', '0')->delete();
+        $files = Files::where('show', '=', '0')->get();
+        foreach($files as $file) {
+            File::delete($file->url);
+            File::delete($file->zip);
+            $file->delete();
+        }
         return Command::SUCCESS;
     }
 }

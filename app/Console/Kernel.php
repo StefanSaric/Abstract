@@ -25,6 +25,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('delete-files')->dailyAt('02:00');
+        //$schedule->command('delete-files')->everyMinute();
+
     }
 
     /**
