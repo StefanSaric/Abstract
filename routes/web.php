@@ -42,4 +42,5 @@ Route::get('/admin/files/show/{id}',  [App\Http\Controllers\Admin\FilesControlle
 Route::get('/admin/files/{id}/createpassword',  [App\Http\Controllers\Admin\ZipController::class, 'setPassword']);
 Route::post('/admin/files/storepassword',  [App\Http\Controllers\Admin\ZipController::class, 'protectZipFile']);
 
+//Route::get('/admin/files/sendfile/{id}',  [App\Http\Controllers\Admin\WebhookController::class, 'sendFile']);
 
