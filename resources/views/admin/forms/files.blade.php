@@ -14,7 +14,7 @@
     <div class="file-field input-field col l6 m6 s12">
         <div class="btn-small cyan float-right">
             <span>{{__('Izaberi')}}</span>
-            <input type="file" id="file" name="file" multiple>
+            <input type="file" id="file" name="file">
         </div>
         <div class="file-path-wrapper" style="padding-left: 0">
             <i class='material-icons prefix'>attach_file</i>
