@@ -10,9 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\File;
-
-
+use App\Http\Requests\FileRequest;
 class FilesController extends Controller
 {
     public function index ()
@@ -27,27 +25,16 @@ class FilesController extends Controller
          return view ('admin.files.create', ['active' => 'addFile']);
     }
 
-    public function store (Request $request)
+    public function store (FileRequest $request)
     {
-        // validation for files
-        $validator = Validator::make($request->all(),[
-            'file' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput($request->input());
-        }
-
 
         $file = $request->file('file');
 
         //creating file name
-        if( $request->name != null) {
+        if ($request->name != null) {
             $name = $request->name . '.' . $file->getClientOriginalExtension();
             $zip_name = $request->name . '.zip';
-        }
-        else {
+        } else {
             $name = $file->getClientOriginalName();
             $zip_name = basename($file->getClientOriginalName(), '.' . $file->getClientOriginalExtension()) . '.zip';
         }
@@ -57,30 +44,29 @@ class FilesController extends Controller
         move_uploaded_file($file, $file_path);
 
         //path to zip file
-        $zip_path = public_path('zip/').$zip_name;
+        $zip_path = public_path('zip/') . $zip_name;
 
         //call Laravel queue job to create zip file
-        dispatch(new CreateZipFile($name,$file_path,$zip_path));
+        dispatch(new CreateZipFile($name, $file_path, $zip_path));
 
         //call Laravel queue job for sending webhook
         dispatch(new CallWebhook($file_path));
 
         //store data to database
-        $one_file = Files::create(['user_id' => Auth::user()->id, 'name' => $name ,'url' => $file_path, 'zip' => $zip_path]);
+        $one_file = Files::create(['user_id' => Auth::user()->id, 'name' => $name, 'url' => $file_path, 'zip' => $zip_path]);
 
-        Session::flash('message', 'success_'.__('Fajl je uspešno dodat!'));
+        Session::flash('message', 'success_' . __('Fajl je uspešno dodat!'));
 
         //return redirect ('admin/files/sendfile/'.$one_file->id);
 
-        return redirect ('admin/files');
-
+        return redirect('admin/files');
     }
+
 
     public function delete ($id) {
 
         $file = Files::find($id);
         $file->show = 0;
-        //File::delete($file->url);
 
         $file->save();
 

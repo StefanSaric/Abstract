@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Session;
-
+use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreUserRequest;
 
 class UserController extends Controller
 {
@@ -22,18 +23,8 @@ class UserController extends Controller
         return view('admin.users.create',['active' => 'addUser']);
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => ['required', 'unique:users'],
-            'password' => 'required'
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput($request->input());
-        }
 
         //setting encription for password
         $request->merge(array('password' => bcrypt($request->input('password'))));
@@ -51,17 +42,8 @@ class UserController extends Controller
         return view('admin.users.edit', ['active' => 'addUser', 'user' => $user]);
     }
 
-    public function update(Request $request)
+    public function update(UpdateUserRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'email' => ['required', 'unique:users,email,' . $request->user_id],
-        ]);
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput($request->input());
-        }
 
         $id = $request->user_id;
         $user = User::find($id);
