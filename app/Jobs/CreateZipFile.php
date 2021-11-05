@@ -4,12 +4,7 @@ namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 use ZipArchive;
-use App\Models\Files;
-use Illuminate\Support\Facades\Auth;
 
 
 class CreateZipFile implements ShouldQueue
@@ -21,11 +16,11 @@ class CreateZipFile implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($name,$file_path,$zip_path)
+    public function __construct($file)
     {
-        $this->name = $name;
-        $this->file_path = $file_path;
-        $this->zip_path = $zip_path;
+        $this->name = $file->name;
+        $this->file_path = $file->url;
+        $this->zip_path = $file->zip;
     }
 
     /**
@@ -36,8 +31,7 @@ class CreateZipFile implements ShouldQueue
     public function handle()
     {
         $zip = new ZipArchive;
-        $zip->open($this->zip_path,ZipArchive::CREATE);
-
+        $zip->open( $this->zip_path,ZipArchive::CREATE);
         $zip->addFile($this->file_path, $this->name);
         $zip->close();
     }

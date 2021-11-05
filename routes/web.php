@@ -21,26 +21,33 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/admin', [App\Http\Controllers\Admin\AdminController::class, 'index']);
-Route::get('/admin/users', [App\Http\Controllers\Admin\UserController::class, 'index']);
-Route::get('/admin/users/create',  [App\Http\Controllers\Admin\UserController::class, 'create']);
-Route::post('/admin/users/store',  [App\Http\Controllers\Admin\UserController::class, 'store']);
-Route::get('/admin/users/{id}/edit',  [App\Http\Controllers\Admin\UserController::class, 'edit']);
-Route::post('/admin/users/update',  [App\Http\Controllers\Admin\UserController::class, 'update']);
-Route::get('/admin/users/{id}/delete',  [App\Http\Controllers\Admin\UserController::class, 'delete']);
+Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
+    Route::get('/', [App\Http\Controllers\Admin\AdminController::class, 'index']);
+
+    Route::group(['prefix' => 'users'], function () {
+            Route::get('/', [App\Http\Controllers\Admin\UserController::class, 'index']);
+            Route::get('/create', [App\Http\Controllers\Admin\UserController::class, 'create']);
+            Route::post('/store', [App\Http\Controllers\Admin\UserController::class, 'store']);
+            Route::get('/{user}/edit', [App\Http\Controllers\Admin\UserController::class, 'edit']);
+            Route::post('/update', [App\Http\Controllers\Admin\UserController::class, 'update']);
+            Route::get('/{user}/delete', [App\Http\Controllers\Admin\UserController::class, 'delete']);
+        });
+
+    Route::group(['prefix' => 'files'], function () {
+        Route::get('', [App\Http\Controllers\Admin\FilesController::class, 'index']);
+        Route::get('/create', [App\Http\Controllers\Admin\FilesController::class, 'create']);
+        Route::post('/store', [App\Http\Controllers\Admin\FilesController::class, 'store']);
+        Route::post('/update', [App\Http\Controllers\Admin\FilesController::class, 'update']);
+        Route::get('/{file}/delete', [App\Http\Controllers\Admin\FilesController::class, 'delete']);
+        Route::get('/show/{file}', [App\Http\Controllers\Admin\FilesController::class, 'show']);
 
 
+        Route::get('/{id}/createpassword', [App\Http\Controllers\Admin\ZipController::class, 'setPassword']);
+        Route::post('/storepassword', [App\Http\Controllers\Admin\ZipController::class, 'protectZipFile']);
 
-Route::get('/admin/files', [App\Http\Controllers\Admin\FilesController::class, 'index']);
-Route::get('/admin/files/create',  [App\Http\Controllers\Admin\FilesController::class, 'create']);
-Route::post('/admin/files/store',  [App\Http\Controllers\Admin\FilesController::class, 'store']);
-Route::post('/admin/files/update',  [App\Http\Controllers\Admin\FilesController::class, 'update']);
-Route::get('/admin/files/{id}/delete',  [App\Http\Controllers\Admin\FilesController::class, 'delete']);
-Route::get('/admin/files/show/{id}',  [App\Http\Controllers\Admin\FilesController::class, 'show']);
+        //Route::get('/sendfile/{id}',  [App\Http\Controllers\Admin\WebhookController::class, 'sendFile']);
+    });
 
-//
-Route::get('/admin/files/{id}/createpassword',  [App\Http\Controllers\Admin\ZipController::class, 'setPassword']);
-Route::post('/admin/files/storepassword',  [App\Http\Controllers\Admin\ZipController::class, 'protectZipFile']);
 
-//Route::get('/admin/files/sendfile/{id}',  [App\Http\Controllers\Admin\WebhookController::class, 'sendFile']);
+});
 

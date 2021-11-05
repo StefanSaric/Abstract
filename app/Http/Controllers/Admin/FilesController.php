@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Jobs\CallWebhook;
 use App\Jobs\CreateZipFile;
 use App\Models\Files;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\FileRequest;
+use App\Services\FileService;
+
 class FilesController extends Controller
 {
     public function index ()
@@ -25,58 +25,30 @@ class FilesController extends Controller
          return view ('admin.files.create', ['active' => 'addFile']);
     }
 
-    public function store (FileRequest $request)
+    public function store (FileRequest $request, FileService $fileservice)
     {
 
-        $file = $request->file('file');
+        $file = $fileservice->storeFile($request->name,$request->file);
 
-        //creating file name
-        if ($request->name != null) {
-            $name = $request->name . '.' . $file->getClientOriginalExtension();
-            $zip_name = $request->name . '.zip';
-        } else {
-            $name = $file->getClientOriginalName();
-            $zip_name = basename($file->getClientOriginalName(), '.' . $file->getClientOriginalExtension()) . '.zip';
-        }
+        dispatch(new CreateZipFile($file));
+        //dispatch(new CallWebhook($file_path));
 
-        // store raw file
-        $file_path = public_path('files/') . $name;
-        move_uploaded_file($file, $file_path);
-
-        //path to zip file
-        $zip_path = public_path('zip/') . $zip_name;
-
-        //call Laravel queue job to create zip file
-        dispatch(new CreateZipFile($name, $file_path, $zip_path));
-
-        //call Laravel queue job for sending webhook
-        dispatch(new CallWebhook($file_path));
-
-        //store data to database
-        $one_file = Files::create(['user_id' => Auth::user()->id, 'name' => $name, 'url' => $file_path, 'zip' => $zip_path]);
 
         Session::flash('message', 'success_' . __('Fajl je uspešno dodat!'));
-
-        //return redirect ('admin/files/sendfile/'.$one_file->id);
-
         return redirect('admin/files');
     }
 
 
-    public function delete ($id) {
+    public function delete (Files $file) {
 
-        $file = Files::find($id);
         $file->show = 0;
-
         $file->save();
 
         return redirect ('admin/files');
     }
 
-    public function show($id)
+    public function show(Files $file)
     {
-        $file = Files::find($id);
-
         return response()->file($file->url);
     }
 }

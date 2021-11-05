@@ -11,8 +11,7 @@ class ZipController extends Controller
 {
     public function setPassword($id)
     {
-        $file = Files::find($id);
-        return view ('admin.zip.create', ['active' => 'addFile', 'file' => $file]);
+        return view ('admin.zip.create', ['active' => 'addFile', 'file' => Files::find($id)]);
     }
 
     public function protectZipFile (Request $request)
