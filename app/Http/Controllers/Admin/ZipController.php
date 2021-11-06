@@ -9,9 +9,9 @@ use ZipArchive;
 
 class ZipController extends Controller
 {
-    public function setPassword($id)
+    public function createPassword(Files $file)
     {
-        return view ('admin.zip.create', ['active' => 'addFile', 'file' => Files::find($id)]);
+        return view ('admin.zip.create', ['active' => 'addFile', 'file' => $file]);
     }
 
     public function protectZipFile (Request $request)

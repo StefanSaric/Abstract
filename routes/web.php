@@ -38,11 +38,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
         Route::get('/create', [App\Http\Controllers\Admin\FilesController::class, 'create']);
         Route::post('/store', [App\Http\Controllers\Admin\FilesController::class, 'store']);
         Route::post('/update', [App\Http\Controllers\Admin\FilesController::class, 'update']);
-        Route::get('/{file}/delete', [App\Http\Controllers\Admin\FilesController::class, 'delete']);
-        Route::get('/show/{file}', [App\Http\Controllers\Admin\FilesController::class, 'show']);
-
-
-        Route::get('/{id}/createpassword', [App\Http\Controllers\Admin\ZipController::class, 'setPassword']);
+        Route::group(['middleware' => 'user'], function () {
+            Route::get('/{file}/delete', [App\Http\Controllers\Admin\FilesController::class, 'delete']);
+            Route::get('/show/{file}', [App\Http\Controllers\Admin\FilesController::class, 'show']);
+            Route::get('/{file}/createpassword', [App\Http\Controllers\Admin\ZipController::class, 'createPassword']);
+        });
         Route::post('/storepassword', [App\Http\Controllers\Admin\ZipController::class, 'protectZipFile']);
 
         //Route::get('/sendfile/{id}',  [App\Http\Controllers\Admin\WebhookController::class, 'sendFile']);
