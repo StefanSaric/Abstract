@@ -24,7 +24,7 @@ class FileRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => ['required', 'unique:files,name']
+            'file' => 'required'
         ];
     }
 }

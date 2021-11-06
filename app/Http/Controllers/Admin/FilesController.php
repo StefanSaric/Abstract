@@ -27,7 +27,6 @@ class FilesController extends Controller
 
     public function store (FileRequest $request, FileService $fileservice)
     {
-
         $file = $fileservice->storeFile($request->name,$request->file);
 
         dispatch(new CreateZipFile($file));
