@@ -4,25 +4,25 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Files;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
-use App\Models\Webhook;
+use App\Jobs\CallWebhook;
 
 
 class WebhookController extends Controller
 {
-    public function sendFile($id)
+    public function sendFile(Files $file)
     {
-
-        $file = Files::find($id);
 
         $endpoints = Config::get('webhook.ENDPOINTS');
 
         $payload_type = Config::get('webhook.PAYLOAD_TYPE');
 
+
         foreach ($endpoints as $endpoint)
         {
-            new Webhook($endpoint, $payload_type,$file->url);
+            dispatch(new CallWebhook($endpoint,$payload_type,$file->url));
         }
+
+        return redirect('admin/files');
     }
 }

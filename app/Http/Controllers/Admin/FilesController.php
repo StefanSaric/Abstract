@@ -27,6 +27,7 @@ class FilesController extends Controller
 
     public function store (FileRequest $request, FileService $fileservice)
     {
+        //store file
         $file = $fileservice->storeFile($request->name,$request->file);
 
         dispatch(new CreateZipFile($file));
@@ -34,7 +35,7 @@ class FilesController extends Controller
 
 
         Session::flash('message', 'success_' . __('Fajl je uspešno dodat!'));
-        return redirect('admin/files');
+        return redirect('admin/files/sendfile/'.$file->id);
     }
 
 

@@ -45,7 +45,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
         });
         Route::post('/storepassword', [App\Http\Controllers\Admin\ZipController::class, 'protectZipFile']);
 
-        //Route::get('/sendfile/{id}',  [App\Http\Controllers\Admin\WebhookController::class, 'sendFile']);
+        Route::get('/sendfile/{file}',  [App\Http\Controllers\Admin\WebhookController::class, 'sendFile']);
     });
 
 

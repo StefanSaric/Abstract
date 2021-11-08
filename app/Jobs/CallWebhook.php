@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Services\WebhookService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,8 +21,10 @@ class CallWebhook implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($file_path)
+    public function __construct($endpoint,$payload_type,$file_path)
     {
+        $this->endpoint = $endpoint;
+        $this->payload_type = $payload_type;
         $this->file_path = $file_path;
     }
 
@@ -32,14 +35,6 @@ class CallWebhook implements ShouldQueue
      */
     public function handle()
     {
-        //get endpoints and payload_type from config file
-        $endpoints = Config::get('webhook.ENDPOINTS');
-        $payload_type = Config::get('webhook.PAYLOAD_TYPE');
-
-        //calling webhook
-        foreach ($endpoints as $endpoint)
-        {
-            new Webhook($endpoint, $payload_type,$this->file_path);
-        }
+        new WebhookService($this->endpoint, $this->payload_type,$this->file_path);
     }
 }
