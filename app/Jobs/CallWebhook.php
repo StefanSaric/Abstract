@@ -4,13 +4,7 @@ namespace App\Jobs;
 
 use App\Services\WebhookService;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Config;
-use App\Models\Webhook;
 
 class CallWebhook implements ShouldQueue
 {

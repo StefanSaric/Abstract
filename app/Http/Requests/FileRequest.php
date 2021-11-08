@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
 
 class FileRequest extends FormRequest
 {
@@ -24,7 +25,9 @@ class FileRequest extends FormRequest
     public function rules()
     {
         return [
-            'file' => 'required'
+            'file' => 'required',
+            'original_name' => 'exists:files,name',
+            'name' => 'exists:files,name'
         ];
     }
 }
